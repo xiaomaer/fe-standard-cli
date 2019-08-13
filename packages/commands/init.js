@@ -3,7 +3,8 @@ const fs = require("fs");
 const inquirer = require("inquirer");
 
 // 要拷贝的目标所在路径
-const templatePath = path.join(__dirname, "..", "template");
+const srcPath = path.join(__dirname, "..", "template");
+const desPath = path.resolve(`${process.cwd()}`);
 
 // 复制指定目录下的文件到项目根目录
 function copyFiles(sourcePath) {
@@ -13,7 +14,8 @@ function copyFiles(sourcePath) {
     const stat = fs.statSync(curPath);
     if (stat.isFile()) {
       const contents = fs.readFileSync(curPath, "utf8");
-      fs.writeFileSync(process.cwd(), contents, "utf8");
+      const targetFile = `${desPath}/${file}`;
+      fs.writeFileSync(targetFile, contents, "utf8");
     }
   });
 }
@@ -50,14 +52,14 @@ function addStandard() {
     .then(answers => {
       const { type, commit, eslint, stylelint } = answers;
       if (commit) {
-        copyFiles(`${templatePath}/commit`);
+        copyFiles(`${srcPath}/commit`);
       }
       if (eslint) {
-        copyFiles(`${templatePath}/eslint`);
-        copyFiles(`${templatePath}/prettier`);
+        copyFiles(`${srcPath}/eslint`);
+        copyFiles(`${srcPath}/prettier`);
       }
       if (stylelint) {
-        copyFiles(`${templatePath}/stylelint`);
+        copyFiles(`${srcPath}/stylelint`);
       }
     });
 }
