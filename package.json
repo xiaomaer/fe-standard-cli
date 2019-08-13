@@ -1,0 +1,18 @@
+{
+  "name": "fe-standard-cli",
+  "version": "1.0.0",
+  "description": "前端项目规范：commit规范、eslint规范和stylelint规范",
+  "main": "index.js",
+  "bin": {
+    "addStandard": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^3.0.0",
+    "inquirer": "^6.5.1"
+  }
+}
