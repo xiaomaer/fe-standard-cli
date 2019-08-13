@@ -1,2 +1,3 @@
-const xx = require("./packages/commands/init");
-xx();
+// 测试脚本
+const addStandard = require("./packages/commands/init");
+addStandard();

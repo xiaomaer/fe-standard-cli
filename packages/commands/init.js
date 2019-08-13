@@ -7,14 +7,21 @@ const srcPath = path.join(__dirname, "..", "template");
 const desPath = path.resolve(`${process.cwd()}`);
 
 // 复制指定目录下的文件到项目根目录
-function copyFiles(sourcePath) {
+function copyFiles(sourcePath, type) {
   const files = fs.readdirSync(sourcePath);
   files.forEach(file => {
     const curPath = `${sourcePath}/${file}`;
     const stat = fs.statSync(curPath);
     if (stat.isFile()) {
-      const contents = fs.readFileSync(curPath, "utf8");
       const targetFile = `${desPath}/${file}`;
+      let contents = fs.readFileSync(curPath, "utf8");
+      // 根据项目类型，修改eslint规则
+      if (file === ".eslintrc.js" && type && type === "typescript react") {
+        contents = contents.replace(
+          "@beisen/eslint-config-beisenux/react",
+          "@beisen/eslint-config-beisenux/typescript-react"
+        );
+      }
       fs.writeFileSync(targetFile, contents, "utf8");
     }
   });
@@ -55,7 +62,7 @@ function addStandard() {
         copyFiles(`${srcPath}/commit`);
       }
       if (eslint) {
-        copyFiles(`${srcPath}/eslint`);
+        copyFiles(`${srcPath}/eslint`, type);
         copyFiles(`${srcPath}/prettier`);
       }
       if (stylelint) {
