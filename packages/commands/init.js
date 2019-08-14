@@ -77,9 +77,13 @@ const addConfig = answers => {
   };
   fs.writeFileSync(filePath, JSON.stringify(contents, null, 4), "utf8");
 };
+// 安装依赖包
 const execNpmInstall = packagesList => {
   const packages = packagesList.join("  ");
-  exec(`npm install ${packages} -D`, { stdio: "inherit" });
+  const npmCommand = `npm install ${packages} -D`;
+  console.log("正在安装依赖包....");
+  console.log("安装命令:", npmCommand);
+  exec(npmCommand, { stdio: "inherit" });
 };
 // 根据添加的规范，安装响应的包
 const installPackages = answers => {
@@ -173,7 +177,7 @@ function addStandard() {
         // 项目package.json文件中添加规范配置
         addConfig(answers);
         // 自动安装规范依赖包
-        execNpmInstall(answers);
+        installPackages(answers);
       }
     });
 }
