@@ -29,8 +29,8 @@ function copyFiles(sourcePath, type) {
 
 // 项目package.json文件添加规范配置
 function addConfig(answers) {
-  const filePath = `${desPath}/package.json`;
   const { commit, eslint, stylelint } = answers;
+  const filePath = `${desPath}/package.json`;
   let contents = JSON.parse(fs.readFileSync(filePath, "utf8"));
   let hooks =
     contents.husky && contents.husky.hooks ? contents.husky.hooks : {};
@@ -72,9 +72,9 @@ function addConfig(answers) {
     husky: {
       hooks
     },
-    "lint-staged": lintStaged
+    "lint-staged": Object.keys(lintStaged).length === 0 ? undefined : lintStaged
   };
-  fs.writeFileSync(filePath, JSON.stringify(contents), "utf8");
+  fs.writeFileSync(filePath, JSON.stringify(contents, null, 4), "utf8");
 }
 
 function addStandard() {
@@ -120,7 +120,9 @@ function addStandard() {
         copyFiles(`${srcPath}/stylelint`);
       }
       // 项目package.json文件中添加规范配置
-      addConfig(answers);
+      if (commit || eslint || stylelint) {
+        addConfig(answers);
+      }
       // 自动安装规范依赖包
     });
 }

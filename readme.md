@@ -33,5 +33,4 @@ addStandard update
 
 ### todo
 * 自动安装依赖包
-* 项目package.json增加hook
 * 如果项目中存在，添加选择是否更新
