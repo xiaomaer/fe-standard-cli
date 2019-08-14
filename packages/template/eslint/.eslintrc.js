@@ -19,6 +19,7 @@ module.exports = {
     // 这里填入你的项目需要的个性化配置
     "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
     "react-hooks/exhaustive-deps": "warn" // 检查 effect 的依赖
+    //  'react/jsx-indent-props': 'off', // 不使用JSX禁用规则
   },
   settings: {
     react: {

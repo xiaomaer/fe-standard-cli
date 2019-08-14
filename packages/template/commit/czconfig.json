@@ -1,10 +1,10 @@
 [
-    {
-        "name": "元数据",
-        "value": "metaData"
-    },
-    {
-        "name": "组件",
-        "value": "components"
-    }
+  {
+    "name": "scope选项配置1",
+    "value": "config"
+  },
+  {
+    "name": "scope选项配置2",
+    "value": "components"
+  }
 ]
