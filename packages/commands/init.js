@@ -27,6 +27,56 @@ function copyFiles(sourcePath, type) {
   });
 }
 
+// 项目package.json文件添加规范配置
+function addConfig(answers) {
+  const filePath = `${desPath}/package.json`;
+  const { commit, eslint, stylelint } = answers;
+  let contents = JSON.parse(fs.readFileSync(filePath, "utf8"));
+  let hooks =
+    contents.husky && contents.husky.hooks ? contents.husky.hooks : {};
+  let lintStaged = contents["lint-staged"] ? contents["lint-staged"] : {};
+  if (commit) {
+    contents = {
+      ...contents,
+      config: {
+        commitizen: {
+          path: "node_modules/@talentui/cz-project-changelog"
+        }
+      }
+    };
+    hooks = {
+      ...hooks,
+      "commit-msg": "commitlint -e $GIT_PARAMS"
+    };
+  }
+  if (eslint || stylelint) {
+    hooks = {
+      ...hooks,
+      "pre-commit": "lint-staged"
+    };
+  }
+  if (eslint) {
+    lintStaged = {
+      ...lintStaged,
+      "**/*.{ts,tsx,js,jsx}": ["eslint --fix", "git add"]
+    };
+  }
+  if (stylelint) {
+    lintStaged = {
+      ...lintStaged,
+      "**/*.{css,scss,less}": ["stylelint --fix", "git add"]
+    };
+  }
+  contents = {
+    ...contents,
+    husky: {
+      hooks
+    },
+    "lint-staged": lintStaged
+  };
+  fs.writeFileSync(filePath, JSON.stringify(contents), "utf8");
+}
+
 function addStandard() {
   inquirer
     .prompt([
@@ -58,6 +108,7 @@ function addStandard() {
     ])
     .then(answers => {
       const { type, commit, eslint, stylelint } = answers;
+      // 添加规范文件
       if (commit) {
         copyFiles(`${srcPath}/commit`);
       }
@@ -68,6 +119,9 @@ function addStandard() {
       if (stylelint) {
         copyFiles(`${srcPath}/stylelint`);
       }
+      // 项目package.json文件中添加规范配置
+      addConfig(answers);
+      // 自动安装规范依赖包
     });
 }
 
