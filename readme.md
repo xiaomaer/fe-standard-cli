@@ -32,5 +32,5 @@ addStandard update
 * stylelint规范：http://note.youdao.com/noteshare?id=279a608d87924ea19f1d1d2a30da5763
 
 ### todo
-* 自动安装依赖包
 * 如果项目中存在，添加选择是否更新
+* 更新命令

@@ -1,13 +1,14 @@
 const path = require("path");
 const fs = require("fs");
 const inquirer = require("inquirer");
+const exec = require("child_process").execSync;
 
 // 要拷贝的目标所在路径
 const srcPath = path.join(__dirname, "..", "template");
 const desPath = path.resolve(`${process.cwd()}`);
 
 // 复制指定目录下的文件到项目根目录
-function copyFiles(sourcePath, type) {
+const copyFiles = (sourcePath, type) => {
   const files = fs.readdirSync(sourcePath);
   files.forEach(file => {
     const curPath = `${sourcePath}/${file}`;
@@ -25,10 +26,10 @@ function copyFiles(sourcePath, type) {
       fs.writeFileSync(targetFile, contents, "utf8");
     }
   });
-}
+};
 
 // 项目package.json文件添加规范配置
-function addConfig(answers) {
+const addConfig = answers => {
   const { commit, eslint, stylelint } = answers;
   const filePath = `${desPath}/package.json`;
   let contents = JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -75,7 +76,56 @@ function addConfig(answers) {
     "lint-staged": Object.keys(lintStaged).length === 0 ? undefined : lintStaged
   };
   fs.writeFileSync(filePath, JSON.stringify(contents, null, 4), "utf8");
-}
+};
+const execNpmInstall = packagesList => {
+  const packages = packagesList.join("  ");
+  exec(`npm install ${packages} -D`, { stdio: "inherit" });
+};
+// 根据添加的规范，安装响应的包
+const installPackages = answers => {
+  const { type, commit, eslint, stylelint } = answers;
+  let packages = [];
+  if (commit) {
+    packages = packages.concat(
+      ...[
+        "commitizen",
+        "@commitlint/cli",
+        "@commitlint/config-conventional",
+        "@talentui/cz-project-changelog"
+      ]
+    );
+  }
+  if (eslint) {
+    if (type === "react") {
+      packages = packages.concat(
+        ...[
+          "eslint",
+          "babel-eslint",
+          "eslint-plugin-react",
+          "@beisen/eslint-config-beisenux"
+        ]
+      );
+    } else {
+      packages = packages.concat(
+        ...[
+          "eslint",
+          "babel-eslint",
+          "typescript",
+          "@typescript-eslint/parser",
+          "@typescript-eslint/eslint-plugin",
+          "eslint-plugin-react",
+          "@beisen/eslint-config-beisenux"
+        ]
+      );
+    }
+  }
+  if (stylelint) {
+    packages = packages.concat(
+      ...["stylelint", "stylelint-config-stand", "husky", "lint-staged"]
+    );
+  }
+  execNpmInstall(packages);
+};
 
 function addStandard() {
   inquirer
@@ -119,11 +169,12 @@ function addStandard() {
       if (stylelint) {
         copyFiles(`${srcPath}/stylelint`);
       }
-      // 项目package.json文件中添加规范配置
       if (commit || eslint || stylelint) {
+        // 项目package.json文件中添加规范配置
         addConfig(answers);
+        // 自动安装规范依赖包
+        execNpmInstall(answers);
       }
-      // 自动安装规范依赖包
     });
 }
 
