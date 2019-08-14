@@ -25,6 +25,76 @@ addStandard init
 addStandard update
 ```
 
+### webpack添加支持
+#### 1、eslint
+安装
+```
+npm install eslint-loader -D
+```
+webpack添加配置rules
+```
+        rules: [
+            {
+                test: /\.(ts|js)x?$/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                include: __SRC
+            },
+        ]
+```
+
+### 2、stylelint
+安装
+```
+npm i -D stylelint-webpack-plugin
+```
+webpack添加配置：
+```
+const StyleLintPlugin = require('stylelint-webpack-plugin');
+
+module.exports = {
+    ...
+    'plugins': [
+        ...
+        new StyleLintPlugin({
+            files: ['**/*.{css,less,sass,scss}'],
+            cache: true,
+            emitErrors: true
+        })
+    ]
+};
+
+```
+
+### vscode配置
+在保存文件时，自动检验代码并修复，vs code配置如下：
+* 安装prettier、eslint、stylelint扩展
+* settings.json添加配置如下：
+```
+{
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "html",
+        {
+            "language": "vue",
+            "autoFix": true
+        },
+        {
+            "language": "typescript",
+            "autoFix": true
+        },
+        {
+            "language": "typescriptreact",
+            "autoFix": true
+        }
+    ],
+    "editor.formatOnSave": true,
+    "prettier.eslintIntegration": true,
+}
+
+```
 
 ### 前端项目规范说明
 * git commit规范：http://note.youdao.com/noteshare?id=debe89ab4e7b85500264a5825a76776d
@@ -33,4 +103,4 @@ addStandard update
 
 ### todo
 * 如果项目中存在，添加选择是否更新
-* 更新命令
+* 更新命令开发

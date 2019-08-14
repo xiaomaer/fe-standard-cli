@@ -90,43 +90,45 @@ const installPackages = answers => {
   const { type, commit, eslint, stylelint } = answers;
   let packages = [];
   if (commit) {
-    packages = packages.concat(
-      ...[
-        "commitizen",
-        "@commitlint/cli",
-        "@commitlint/config-conventional",
-        "@talentui/cz-project-changelog"
-      ]
-    );
+    packages = [
+      ...packages,
+      "commitizen",
+      "@commitlint/cli",
+      "@commitlint/config-conventional",
+      "@talentui/cz-project-changelog",
+      "husky"
+    ];
   }
   if (eslint) {
-    if (type === "react") {
-      packages = packages.concat(
-        ...[
-          "eslint",
-          "babel-eslint",
-          "eslint-plugin-react",
-          "@beisen/eslint-config-beisenux"
-        ]
-      );
-    } else {
-      packages = packages.concat(
-        ...[
-          "eslint",
-          "babel-eslint",
-          "typescript",
-          "@typescript-eslint/parser",
-          "@typescript-eslint/eslint-plugin",
-          "eslint-plugin-react",
-          "@beisen/eslint-config-beisenux"
-        ]
-      );
+    packages = [
+      ...packages,
+      "eslint",
+      "babel-eslint",
+      "eslint-plugin-react",
+      "@beisen/eslint-config-beisenux",
+      "prettier",
+      "eslint-plugin-prettier",
+      "eslint-config-prettier",
+      "husky",
+      "lint-staged"
+    ];
+    if (type === "typescript react") {
+      packages = [
+        ...packages,
+        "typescript",
+        "@typescript-eslint/parser",
+        "@typescript-eslint/eslint-plugin"
+      ];
     }
   }
   if (stylelint) {
-    packages = packages.concat(
-      ...["stylelint", "stylelint-config-stand", "husky", "lint-staged"]
-    );
+    packages = [
+      ...packages,
+      "stylelint",
+      "stylelint-config-stand",
+      "husky",
+      "lint-staged"
+    ];
   }
   execNpmInstall(packages);
 };
