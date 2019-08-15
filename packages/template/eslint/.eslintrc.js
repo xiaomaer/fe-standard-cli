@@ -1,12 +1,10 @@
-// 使用AlloyTeam ESLint 规则：https://github.com/AlloyTeam/eslint-config-alloy
+// 基于AlloyTeam ESLint 规则进行修改：@beisen/eslint-config-beisenux
 module.exports = {
   plugins: ["react-hooks"],
   extends: [
-    // "@beisen/eslint-config-beisenux", //js标准规则
-    //  "@beisen/eslint-config-beisenux/typescript", //ts规则
     "@beisen/eslint-config-beisenux/react", //react规则
     // "@beisen/eslint-config-beisenux/typescript-react", //ts react规则
-    "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
+    // "prettier/@typescript-eslint", // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
     "plugin:prettier/recommended" // Enables eslint-plugin-prettier and displays prettier errors as ESLint errors. Make sure this is always the last configuration in the extends array.
   ],
   globals: {
@@ -18,9 +16,7 @@ module.exports = {
   rules: {
     // 这里填入你的项目需要的个性化配置
     "react-hooks/rules-of-hooks": "error", // 检查 Hook 的规则
-    "react-hooks/exhaustive-deps": "warn", // 检查 effect 的依赖
-    "react/jsx-indent": 0,
-    "react/jsx-indent-props": 0
+    "react-hooks/exhaustive-deps": "warn" // 检查 effect 的依赖
   },
   settings: {
     react: {
