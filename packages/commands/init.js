@@ -8,20 +8,32 @@ const exec = require("child_process").execSync;
 const srcPath = path.join(__dirname, "..", "template");
 const desPath = path.resolve(`${process.cwd()}`);
 
+let isReadline = false;
+
 // 按行读取写入文件
-const modifyFile = writePath => {
+const modifyFile = (readPath, writePath) => {
+  isReadline = true;
+  let line = 0;
   // 用来存储结果的变量
   let arr = [];
-  //创建文件流
-  const readstream = fs.createReadStream("../template/eslint/.eslintrc.js");
-  //创建逐行读取
+  // 创建文件流
+  const readstream = fs.createReadStream(readPath);
+  // 创建逐行读取
   const rl = readline.createInterface({
     input: readstream
   });
   rl.on("line", function(data) {
+    line += 1;
+    if (line === 5) {
+      data = `    // ${data.trim()}`;
+    }
+    if (line === 6 || line === 7) {
+      data = data.replace(/\/\/\s*(.*)/, "$1");
+    }
     arr.push(data);
   }).on("close", function() {
     fs.writeFileSync(writePath, arr.join("\r\n"), "utf8");
+    isReadline = false;
   });
 };
 
@@ -35,7 +47,7 @@ const copyFiles = (sourcePath, type) => {
       const targetFile = `${desPath}/${file}`;
       // 根据项目类型，修改eslint规则
       if (file === ".eslintrc.js" && type && type === "typescript react") {
-        modifyFile(targetFile);
+        modifyFile(curPath, targetFile);
       } else {
         const contents = fs.readFileSync(curPath, "utf8");
         fs.writeFileSync(targetFile, contents, "utf8");
@@ -201,7 +213,13 @@ function addStandard() {
         // 项目package.json文件中添加规范配置
         addConfig(answers);
         // 自动安装规范依赖包
-        installPackages(answers);
+        // 【注意：需要按行读取文件完成才可以触发，不然导致readline line等事件不执行】
+        const t = setInterval(() => {
+          if (!isReadline) {
+            installPackages(answers);
+            clearInterval(t);
+          }
+        }, 100);
       }
     });
 }
