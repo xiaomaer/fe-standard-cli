@@ -1,6 +1,10 @@
-// 测试脚本
-const addStandard = require("./packages/commands/init");
-addStandard();
+// init
+// const addStandard = require('./packages/commands/init');
+// addStandard();
+
+// update
+const updateStandard = require('./packages/commands/update');
+updateStandard();
 
 /* const fs = require("fs");
 const readline = require("readline");
