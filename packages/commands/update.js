@@ -17,19 +17,19 @@ const fileIsExist = (file) => {
 };
 
 // 命令行交互提示文字
-const eslintTip = fileIsExist('eslint') ? 'eslint规范已存在，是否替换？' : '是否更新eslint规范';
+const eslintTip = fileIsExist('eslint') ? 'eslint规范已存在，是否替换？' : '是否添加eslint规范';
 const stylelintTip = fileIsExist('stylelint')
   ? 'stylelint规范已存在，是否替换？'
-  : '是否更新stylelint规范';
+  : '是否添加stylelint规范';
 const commitlintTip = fileIsExist('commitlint')
   ? 'commit msg规范已存在，是否替换？'
-  : '是否更新commit msg规范';
+  : '是否添加commit msg规范';
 
 const options = [
   {
     name: 'type',
     type: 'list',
-    message: '项目类型',
+    message: '请选择项目类型',
     default: 'react',
     choices: ['react', 'typescript react']
   },

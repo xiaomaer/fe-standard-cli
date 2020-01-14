@@ -3,7 +3,7 @@ const options = [
   {
     name: "type",
     type: "list",
-    message: "项目类型",
+    message: "请选择项目类型",
     default: "react",
     choices: ["react", "typescript react"]
   },

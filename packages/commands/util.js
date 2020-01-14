@@ -22,16 +22,16 @@ const modifyFile = (readPath, writePath) => {
   const rl = readline.createInterface({
     input: readstream
   });
-  rl.on("line", function(data) {
+  rl.on("line", function (data) {
     line += 1;
-    if (line === 5) {
+    if (line === 3) {
       data = `    // ${data.trim()}`;
     }
-    if (line === 6 || line === 7) {
+    if (line === 4 || line === 5) {
       data = data.replace(/\/\/\s*(.*)/, "$1");
     }
     arr.push(data);
-  }).on("close", function() {
+  }).on("close", function () {
     fs.writeFileSync(writePath, arr.join("\r\n"), "utf8");
     isReadline = false;
   });
@@ -77,7 +77,8 @@ const addConfig = answers => {
   let contents = JSON.parse(fs.readFileSync(filePath, "utf8"));
   let hooks =
     contents.husky && contents.husky.hooks ? contents.husky.hooks : {};
-  let lintStaged = contents["lint-staged"] ? contents["lint-staged"] : {};
+  let lintStaged = contents["lint-staged"] || {};
+  let scripts = contents.scripts || {};
   if (commit) {
     contents = {
       ...contents,
@@ -91,6 +92,10 @@ const addConfig = answers => {
       ...hooks,
       "commit-msg": "commitlint -e $GIT_PARAMS"
     };
+    scripts = {
+      ...scripts,
+      "commit": "git-cz",
+    }
   }
   if (eslint || stylelint) {
     hooks = {
@@ -101,17 +106,28 @@ const addConfig = answers => {
   if (eslint) {
     lintStaged = {
       ...lintStaged,
-      "**/*.{ts,tsx,js,jsx}": ["eslint --fix", "git add"]
+      "**/*.{ts,tsx,js,jsx,css,scss,less}": ["prettier --write"],
+      "**/*.{ts,tsx,js,jsx}": ["eslint --fix"]
     };
+    scripts = {
+      ...scripts,
+      "lint:es": "eslint --fix --ext .ts,tsx,js,jsx src",
+      "format": "prettier --write **/*.{ts,tsx,js,jsx,css,scss,less}",
+    }
   }
   if (stylelint) {
     lintStaged = {
       ...lintStaged,
-      "**/*.{css,scss,less}": ["stylelint --fix", "git add"]
+      "**/*.{css,scss,less}": ["stylelint --fix"]
     };
+    scripts = {
+      ...scripts,
+      "lint:style": "stylelint --fix **/*.{css,scss,less}",
+    }
   }
   contents = {
     ...contents,
+    scripts,
     husky: {
       hooks
     },
@@ -129,7 +145,7 @@ const execNpmInstall = packagesList => {
 };
 // 根据添加的规范，安装响应的包
 const installPackages = answers => {
-  const { type, commit, eslint, stylelint } = answers;
+  const { commit, eslint, stylelint } = answers;
   let packages = [];
   if (commit) {
     packages = [
@@ -144,36 +160,24 @@ const installPackages = answers => {
   if (eslint) {
     packages = [
       ...packages,
-      "eslint",
-      "babel-eslint",
-      "eslint-plugin-react",
-      "@beisen/eslint-config-beisenux",
-      "prettier",
-      "eslint-plugin-prettier",
+      "@beisen/eslint-config",
+      "@beisen/prettier-config",
       "eslint-config-prettier",
-      "eslint-plugin-react-hooks",
-      "husky",
+      "prettier", "husky",
       "lint-staged"
     ];
-    if (type === "typescript react") {
-      packages = [
-        ...packages,
-        "typescript",
-        "@typescript-eslint/parser",
-        "@typescript-eslint/eslint-plugin"
-      ];
-    }
   }
   if (stylelint) {
     packages = [
       ...packages,
-      "stylelint",
-      "stylelint-config-standard",
+      "@beisen/stylelint-config",
       "husky",
       "lint-staged"
     ];
   }
-  execNpmInstall(packages);
+  // 数组去重
+  const filterPackages = packages.filter(item => packages.indexOf(item) === packages.lastIndexOf(item))
+  execNpmInstall(filterPackages);
 };
 
 function initStandard(options) {
