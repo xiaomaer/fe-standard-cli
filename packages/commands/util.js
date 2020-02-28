@@ -93,6 +93,7 @@ const addConfig = answers => {
   }
   contents = {
     ...contents,
+    scripts,
     husky: {
       hooks
     },
