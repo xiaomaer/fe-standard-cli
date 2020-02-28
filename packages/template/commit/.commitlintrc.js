@@ -1,25 +1,24 @@
 module.exports = {
-    extends: ['@commitlint/config-conventional'],
-    // 暂定type、scope和subject不能为空
+    extends: ["@commitlint/config-conventional"],
     rules: {
-        'type-enum': [
+        "type-enum": [
             2,
-            'always',
+            "always",
             [
-                'feat',
-                'fix',
-                'docs',
-                'style',
-                'refactor',
-                'perf',
-                'test',
-                'build',
-                'ci',
-                'chore',
-                'revert'
+                "WIP",
+                "feat",
+                "fix",
+                "refactor",
+                "docs",
+                "test",
+                "style",
+                "chore",
+                "revert"
             ]
         ],
-        'scope-empty': [2, 'never'],
-        'subject-empty': [2, 'never']
+        "type-case": [1, "always", ["lower-case", "upper-case"]],
+        "scope-case": [0, "never"],
+        "subject-case": [0, "never"],
+        "scope-empty": [0, "never"]
     }
 };

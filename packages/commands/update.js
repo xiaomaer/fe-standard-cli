@@ -26,13 +26,13 @@ const commitlintTip = fileIsExist('commitlint')
   : '是否更新commit msg规范';
 
 const options = [
-  {
+  /* {
     name: 'type',
     type: 'list',
     message: '项目类型',
     default: 'react',
     choices: ['react', 'typescript react']
-  },
+  }, */
   {
     name: 'commit',
     type: 'confirm',
