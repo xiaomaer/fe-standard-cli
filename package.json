@@ -1,6 +1,6 @@
 {
   "name": "fe-standard-cli",
-  "version": "1.0.6",
+  "version": "1.2.0",
   "description": "前端项目规范：commit规范、eslint规范和stylelint规范",
   "main": "index.js",
   "bin": {

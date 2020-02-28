@@ -125,7 +125,9 @@ const installPackages = answers => {
     packages = [
       ...packages,
       "@umijs/fabric",
+      // 因为@umijs/fabric没有将prettier作为依赖 所以我们需要手动安装
       "prettier",
+      "lint-staged"
     ];
   }
   if (commit || eslint || stylelint) {
